@@ -1,2 +1,5 @@
 # FunctionalConnectomes
-2nd year project at Software Engineering, HSE
+Курсовая работа
+Золотухина Анастасия
+2ой курс, группа БПИ181
+руководитель Чернышев Всеволод Леонидович
