@@ -1,0 +1,12 @@
+.button {
+    -fx-background-radius: 0;
+    -fx-text-fill: #FFFFFF;
+}
+
+.button.active {
+    -fx-background-color: #0097a7;
+}
+
+.button.passive {
+    -fx-background-color: #006978;
+}

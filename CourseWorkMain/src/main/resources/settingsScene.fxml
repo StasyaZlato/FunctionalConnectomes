@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import java.lang.Integer?>
+<VBox xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FirstStageController">
+<VBox alignment="TOP_LEFT" prefHeight="400.0" prefWidth="800.0" >
+    <Label text="Добро пожаловать в приложение...!&#13;Перед тем, как можно будет анализировать данные, необходимо выбрать требуемые параметры анализа." textAlignment="LEFT" wrapText="true">
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+    </Label>
+
+    <Label text="Выберите тип симплициального комплекса: " wrapText="true">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+    </Label>
+    <ChoiceBox value="Vietoris-Rips" fx:id="complexType">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Vietoris-Rips" />
+                <String fx:value="Lazy witness" />
+            </FXCollections>
+        </items>
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0"/>
+        </VBox.margin>
+    </ChoiceBox>
+    <Label text="Введите максимальную величину фильтрации:" wrapText="true">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+    </Label>
+    <TextField promptText="max filtration value" fx:id="maxFiltrationValue" maxWidth="200">
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0"/>
+        </VBox.margin>
+    </TextField>
+    <Label text="Выберите размерность, до которой будут считаться гомологии:"  wrapText="true">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+    </Label>
+    <Label styleClass="small" text="Обратите внимание, что при больших значениях рассчет может занимать длительное время"  wrapText="true">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0"/>
+        </VBox.margin>
+    </Label>
+    <ChoiceBox fx:id="maxDimensions" value="1">
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="1" />
+                <String fx:value="2" />
+                <String fx:value="3" />
+                <String fx:value="4" />
+                <String fx:value="5" />
+                <String fx:value="6" />
+                <String fx:value="7" />
+                <String fx:value="8" />
+            </FXCollections>
+        </items>
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0"/>
+        </VBox.margin>
+    </ChoiceBox>
+
+</VBox>
+    <VBox alignment="CENTER">
+        <Button styleClass="active" text="Начать обработку" />
+
+    </VBox>
+    <stylesheets>
+        <URL value="@fontstyle.css" />
+        <URL value="@buttons.css" />
+        <URL value="@choiceBox.css" />
+    </stylesheets>
+</VBox>
