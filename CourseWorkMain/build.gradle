@@ -37,6 +37,8 @@ dependencies {
 
     compile project(":InputDataProcessing")
 
+    compile project(":TopologicalDataAnalysis")
+
 }
 
 

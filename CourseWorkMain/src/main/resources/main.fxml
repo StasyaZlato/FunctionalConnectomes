@@ -8,10 +8,10 @@
 <BorderPane prefHeight="800" prefWidth="1200" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainMenuController">
     <left>
         <VBox spacing="2" alignment="BOTTOM_CENTER">
-            <Button styleClass="active" fx:id="settings" prefHeight="100" prefWidth="400" text="Настройки" onMouseClicked="#openNextTab" />
-            <Button styleClass="passive" fx:id="process" prefHeight="100" prefWidth="400" text="Обучение" onMouseClicked="#openNextTab" />
-            <Button styleClass="passive" fx:id="open" prefHeight="100" prefWidth="400" text="Входные данные" onMouseClicked="#openNextTab"/>
-            <Button styleClass="passive" fx:id="results" prefHeight="100" prefWidth="400" text="Результаты" onMouseClicked="#openNextTab"/>
+            <Button styleClass="active" fx:id="settings" prefHeight="100" prefWidth="300" text="Настройки" onMouseClicked="#openNextTab" />
+            <Button styleClass="passive" fx:id="process" prefHeight="100" prefWidth="300" text="Обучение" onMouseClicked="#openNextTab" />
+            <Button styleClass="passive" fx:id="open" prefHeight="100" prefWidth="300" text="Входные данные" onMouseClicked="#openNextTab"/>
+            <Button styleClass="passive" fx:id="results" prefHeight="100" prefWidth="300" text="Результаты" onMouseClicked="#openNextTab"/>
         </VBox>
     </left>
     <center>

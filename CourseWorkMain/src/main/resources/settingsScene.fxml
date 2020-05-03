@@ -10,7 +10,7 @@
 <?import java.lang.String?>
 <?import customControls.DoubleTextField?>
 <VBox xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
-<VBox prefWidth="800.0" >
+<VBox prefWidth="900.0" >
     <Label text="Добро пожаловать в приложение...!&#13;Перед тем, как можно будет анализировать данные, необходимо выбрать требуемые параметры анализа." wrapText="true">
         <VBox.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

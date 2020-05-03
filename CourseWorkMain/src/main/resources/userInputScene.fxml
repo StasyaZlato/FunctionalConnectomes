@@ -7,14 +7,63 @@
 <?import javafx.scene.layout.*?>
 
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.UserInputSceneController"
-            prefHeight="400.0" prefWidth="800.0" alignment="CENTER">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.UserInputSceneController"
+      prefWidth="900.0" alignment="CENTER">
+    <VBox fx:id="inputInfoVBox">
 
-    <Label text="SECOND SCENE"/>
-    <stylesheets>
-        <URL value="@fontstyle.css"/>
-    </stylesheets>
+        <TextFlow>
+            <Text text="Для того, чтобы начать анализировать данные, нажмите на кнопку " styleClass="text-ordinary"/>
+            <Text text="&quot;Выбрать файл&quot;" styleClass="text-blue"/>
+            <VBox.margin>
+                <Insets left="20.0" right="20.0" top="20.0" />
+            </VBox.margin>
+        </TextFlow>
+        <TextFlow>
+            <Text text="Если Вы хотите проанализировать одновременно несколько файлов, нажмите кнопку " styleClass="text-ordinary"/>
+            <Text text="&quot;Выбрать несколько&quot;" styleClass="text-blue"/>
+            <VBox.margin>
+                <Insets left="20.0" right="20.0" top="20.0" />
+            </VBox.margin>
+        </TextFlow>
+        <TextFlow>
+            <Text text="Обратите внимание, файл должен иметь расширение " styleClass="text-ordinary"/>
+            <Text text=".npy" styleClass="text-blue"/>
+            <Text text=" и содержать корректную корреляционную матрицу пациента (квадратную, симметричную). В противном случае корректность результатов не гарантируется."
+                  styleClass="text-ordinary"/>
 
+            <VBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0"/>
+            </VBox.margin>
+        </TextFlow>
+        <TextFlow styleClass="small" fx:id="currentSettings">
+            <VBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0"/>
+            </VBox.margin>
+        </TextFlow>
+
+
+
+        <stylesheets>
+            <URL value="@fontstyle.css"/>
+            <URL value="@buttons.css"/>
+        </stylesheets>
+
+    </VBox>
+    <HBox alignment="CENTER">
+        <Button styleClass="active" text="Выбрать файл"  fx:id="chooseOneFileBtn" onAction="#chooseOneFile">
+            <HBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0"/>
+            </HBox.margin>
+        </Button>
+        <Button styleClass="active" text="Выбрать несколько"  fx:id="chooseFewFilesBtn" onAction="#chooseFewFiles">
+            <HBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0"/>
+            </HBox.margin>
+        </Button>
+    </HBox>
 </VBox>

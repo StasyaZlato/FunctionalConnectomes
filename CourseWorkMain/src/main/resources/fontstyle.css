@@ -19,3 +19,28 @@
     -fx-font-family: 'Raleway';
     -fx-font-size: 20;
 }
+
+.text-blue {
+    -fx-font-family: 'Raleway';
+    -fx-font-size: 20;
+    -fx-fill: #0097a7;
+}
+
+.text-blue-small {
+    -fx-font-family: 'Raleway';
+    -fx-font-size: 14;
+    -fx-fill: #0097a7;
+}
+
+.text-ordinary {
+    -fx-font-family: 'Raleway';
+    -fx-font-size: 20;
+    -fx-fill: -fx-text-background-color;
+}
+
+.text-ordinary-small {
+    -fx-font-family: 'Raleway';
+    -fx-font-size: 14;
+    -fx-fill: -fx-text-background-color;
+}
+
