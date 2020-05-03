@@ -1,14 +1,18 @@
+package main;
+
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pojo.AppData;
 
 import java.io.IOException;
 
@@ -20,6 +24,18 @@ public class CourseWorkMain{
         public static Node resultsScene;
         public static Node settingsScene;
 
+        public static AppData data;
+
+        private static Stage primaryStage;
+
+        public static Stage getPrimaryStage() {
+            return primaryStage;
+        }
+
+        private static void setPrimaryStage(Stage pStage) {
+            MainLaunch.primaryStage = pStage;
+        }
+
         static {
             try {
                 processScene = FXMLLoader.load(MainLaunch.class.getResource("/processScene.fxml"));
@@ -28,12 +44,18 @@ public class CourseWorkMain{
                 settingsScene = FXMLLoader.load(MainLaunch.class.getResource("/settingsScene.fxml"));
             }
             catch (IOException ex){
-
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Произошла ошибка во время загрузки сцены! Возможно, архив " +
+                        "приложения был поврежден.");
+                alert.show();
             }
+
+            data = new AppData();
         }
 
         @Override
         public void start(Stage primaryStage) throws Exception {
+
+            setPrimaryStage(primaryStage);
 
             root = FXMLLoader.load(getClass().getResource("/main.fxml"));
             primaryStage.setTitle("Connectomes");
@@ -55,22 +77,18 @@ public class CourseWorkMain{
         }
 
         public static void openUserInput() {
-//            userInputScene = FXMLLoader.load(MainLaunch.class.getResource("/userInputScene.fxml"));
             ((BorderPane)root).setCenter(userInputScene);
         }
 
         public static void openProcess() {
-//            processScene = FXMLLoader.load(MainLaunch.class.getResource("/processScene.fxml"));
             ((BorderPane)root).setCenter(processScene);
         }
 
         public static void openResults() {
-//            resultsScene = FXMLLoader.load(MainLaunch.class.getResource("/resultsScene.fxml"));
             ((BorderPane)root).setCenter(resultsScene);
         }
 
         public static void openSettings() {
-//            settingsScene = FXMLLoader.load(MainLaunch.class.getResource("/settingsScene.fxml"));
             ((BorderPane)root).setCenter(settingsScene);
         }
     }

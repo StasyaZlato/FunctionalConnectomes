@@ -3,6 +3,7 @@ package processing;
 import NPArray.*;
 import process.ProcessNpy;
 
+
 public class ProcessFile {
     public final String path;
 
@@ -17,5 +18,8 @@ public class ProcessFile {
 
     public TwoDimensionalArray get2DArray() {
         return (TwoDimensionalArray) array;
+    }
+
+    public void proceed2DArray() {
     }
 }

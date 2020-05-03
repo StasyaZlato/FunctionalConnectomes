@@ -36,7 +36,7 @@ public class TDAMain {
 //        stream.finalizeStream();
 
 
-        VietorisRipsStream<Integer> stream = new VietorisRipsStream<>(metricSpace, max, 5);
+        VietorisRipsStream<Integer> stream = new VietorisRipsStream<>(metricSpace, max, 4);
 
 
 
@@ -47,6 +47,9 @@ public class TDAMain {
         AbstractPersistenceAlgorithm<Simplex> algorithm = Plex4.getModularSimplicialAlgorithm(4, 2);
 
         BarcodeCollection<Double> intervals = algorithm.computeIntervals(stream);
+
+        System.out.println(intervals.getBettiNumbers());
+//        System.out.println(algorithm.computeIndexIntervals(stream));
 
         System.out.println("\nBarcodes for " + d + "-sphere:");
         System.out.println(intervals);
