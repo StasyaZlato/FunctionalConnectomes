@@ -9,25 +9,23 @@ import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import pojo.AppData;
+import pojo.Interval;
 import pojo.TDAResponse;
 import processing.ProcessFile;
 import sun.rmi.rmic.Main;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CourseWorkMain{
     public static class MainLaunch extends Application {
@@ -155,30 +153,27 @@ public class CourseWorkMain{
             ((BorderPane)root).setCenter(oneFileResultsScene);
 
 
-            ProgressBar progressBar = (ProgressBar)((VBox)oneFileResultsScene).getChildren().get(1);
+            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
             progressBar.progressProperty().unbind();
-
-            Label infoLabel = ((Label)((VBox)oneFileResultsScene).getChildren().get(0));
 
             if (!data.noFilePathGiven()) {
                 if (data.getResults().getTdaResponse().isEmpty() ||
                         !data.getFilePath().equals(data.getResults().getTdaResponse().get(0).getPath())) {
-                    infoLabel.setText(String.format("Подождите, пока заершится анализ файла %s", data.getFilePath()));
-                    ProcessFile processFile = new ProcessFile(data.getFilePath());
+
+                    ProcessFile processFile = new ProcessFile(data.getFilePath(), data.getComplexType(), data.getMaxDimensions(), data.getMaxFiltrationValue());
                     progressBar.setVisible(true);
+                    showAnalysisIsGoingOn();
                     Task<TDAResponse> task = new Task<TDAResponse>() {
                         @Override
                         public TDAResponse call() {
-                            TDAResponse res = processFile.process2DArray();
-                            return res;
+                            return processFile.process2DArray();
                         }
                     };
 
                     task.setOnSucceeded(e -> {
                         TDAResponse result = task.getValue();
                         data.setResults(result);
-                        progressBar.setVisible(false);
-                        infoLabel.setText(String.format("Обработка файла %s завершена", data.getFilePath()));
+                        showAnalysisResults();
                     });
 
                     progressBar.progressProperty().bind(task.progressProperty());
@@ -188,11 +183,128 @@ public class CourseWorkMain{
                 }
             }
             else {
-                infoLabel.setText("Файл для обработки не выбран");
-                progressBar.setVisible(false);
+                showNoFileResults();
             }
         }
+
+        private static void showNoFileResults() {
+            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
+            TextFlow infoLabel = (TextFlow) ((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
+
+            Text t1 = new Text("Файл для обработки не выбран.");
+            t1.getStyleClass().add("text-ordinary");
+            infoLabel.getChildren().clear();
+            infoLabel.getChildren().add(t1);
+            progressBar.setVisible(false);
+        }
+
+        private static void showAnalysisResults() {
+            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
+            TextFlow infoLabel = (TextFlow)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
+
+            HBox topInfoLabel = (HBox)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(2);
+
+            HBox bottomBtns = (HBox) (((BorderPane)oneFileResultsScene).getBottom());
+            bottomBtns.setVisible(true);
+
+            topInfoLabel.setVisible(true);
+
+            progressBar.setVisible(false);
+
+            Text t11 = new Text("Обработка файла ");
+            t11.getStyleClass().add("text-ordinary");
+            Text t12 = new Text(data.getFilePath());
+            t12.getStyleClass().add("text-blue-small");
+            Text t13 = new Text(" завершена");
+            t13.getStyleClass().add("text-ordinary");
+
+            infoLabel.getChildren().clear();
+            infoLabel.getChildren().addAll(t11, t12, t13);
+
+            Label betti = (Label)topInfoLabel.getChildren().get(0);
+            betti.setText(String.format("Числа Бетти: %s", data.getResults().getOnlyTDAResponse().getBettiNumbers()));
+
+           plotBarCode();
+
+
+
+
+        }
+
+        private static void plotBarCode() {
+            ScrollPane graphsScroll = (ScrollPane)((BorderPane)oneFileResultsScene).getCenter();
+
+            VBox graphsPanel = (VBox)graphsScroll.getContent();
+            graphsPanel.getChildren().clear();
+            Set<Map.Entry<Integer, List<Interval>>> entrySet = data.getResults().getOnlyTDAResponse().getIntervals().entrySet();
+
+            for (Map.Entry<Integer, List<Interval>> entry : entrySet) {
+                NumberAxis xAxis = new NumberAxis();
+                NumberAxis yAxis = new NumberAxis();
+
+                yAxis.setAutoRanging(false);
+                yAxis.setLowerBound(0);
+                yAxis.setUpperBound(entry.getValue().size() + 1);
+                yAxis.setTickUnit(1);
+                yAxis.setMinorTickCount(0);
+
+                xAxis.setAutoRanging(false);
+                xAxis.setLowerBound(0);
+                xAxis.setUpperBound(data.getMaxFiltrationValue());
+                xAxis.setTickUnit(data.getMaxFiltrationValue() / 20);
+
+                LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+
+                lineChart.setTitle(String.format("%d-dimension", entry.getKey()));
+                lineChart.setPrefHeight((entry.getValue().size() + 1) * 8);
+
+//                double max = 0;
+                int i = 1;
+                lineChart.setCreateSymbols(false);
+                for (Interval in : entry.getValue()) {
+                    XYChart.Series<Number, Number> series = new XYChart.Series<>();
+                    series.getData().add(new XYChart.Data<>(in.getStart(), i));
+                    if (!in.isLeftInfinite()) {
+                        XYChart.Data<Number, Number> right = new XYChart.Data<>(in.getEnd(), i);
+
+                        series.getData().add(right);
+                    }
+                    else {
+                        XYChart.Data<Number, Number> inf = new XYChart.Data<>(data.getMaxFiltrationValue(), i);
+
+                        series.getData().add(inf);
+                    }
+                    i++;
+                    lineChart.getData().add(series);
+                    lineChart.setLegendVisible(false);
+                }
+                lineChart.getYAxis().setTickLabelsVisible(false);
+                graphsPanel.getChildren().add(lineChart);
+            }
+            graphsScroll.setContent(graphsPanel);
+            ((BorderPane)oneFileResultsScene).setCenter(graphsScroll);
+
+
+        }
+
+        private static void showAnalysisIsGoingOn() {
+            TextFlow infoLabel = (TextFlow) ((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
+            HBox topInfoLabel = (HBox)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(2);
+
+            topInfoLabel.setVisible(false);
+
+            Text t1 = new Text("Подождите, пока завершится анализ файла ");
+            t1.getStyleClass().add("text-ordinary");
+            Text t2 = new Text(data.getFilePath());
+            t2.getStyleClass().add("text-blue-small");
+            infoLabel.getChildren().clear();
+            infoLabel.getChildren().addAll(t1, t2);
+
+            ((BorderPane)oneFileResultsScene).setRight(null);
+        }
     }
+
+
 
     public static void main(String[] args) {
         Application.launch(MainLaunch.class);

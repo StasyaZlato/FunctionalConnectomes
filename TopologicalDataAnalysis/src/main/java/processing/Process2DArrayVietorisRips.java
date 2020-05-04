@@ -30,7 +30,7 @@ public class Process2DArrayVietorisRips extends ProcessNDimensionalArray {
 
         numberOfSimplexes = stream.getSize();
 
-        AbstractPersistenceAlgorithm<Simplex> algorithm = Plex4.getModularSimplicialAlgorithm(maxDimensions, 2);
+        AbstractPersistenceAlgorithm<Simplex> algorithm = Plex4.getDefaultSimplicialAlgorithm(maxDimensions);
 
         intervals = algorithm.computeIntervals(stream);
     }

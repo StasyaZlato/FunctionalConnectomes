@@ -25,6 +25,7 @@ public class AppData {
     }
 
     public void setFilePath(String filePath) {
+        this.filePath.clear();
         this.filePath.add(filePath);
     }
 

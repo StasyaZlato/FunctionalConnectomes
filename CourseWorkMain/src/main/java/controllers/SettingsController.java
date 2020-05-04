@@ -34,7 +34,7 @@ public class SettingsController {
             maxFiltrationStr = maxFiltrationStr.replaceAll(",", ".");
         }
         if (maxFiltrationStr.isEmpty()) {
-            maxFiltrationValueD = 0.0;
+            maxFiltrationValueD = 1.0;
         }
         else {
             maxFiltrationValueD = Double.valueOf(maxFiltrationStr);

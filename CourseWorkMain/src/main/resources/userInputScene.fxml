@@ -45,14 +45,6 @@
                 <Insets bottom="20.0" left="20.0" right="20.0"/>
             </VBox.margin>
         </TextFlow>
-
-
-
-        <stylesheets>
-            <URL value="@fontstyle.css"/>
-            <URL value="@buttons.css"/>
-        </stylesheets>
-
     </VBox>
     <HBox alignment="CENTER">
         <Button styleClass="active" text="Выбрать файл"  fx:id="chooseOneFileBtn" onAction="#chooseOneFile">
@@ -66,4 +58,8 @@
             </HBox.margin>
         </Button>
     </HBox>
+    <stylesheets>
+        <URL value="@fontstyle.css"/>
+        <URL value="@buttons.css"/>
+    </stylesheets>
 </VBox>

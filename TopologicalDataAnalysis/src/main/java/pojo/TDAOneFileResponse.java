@@ -1,16 +1,16 @@
 package pojo;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TDAOneFileResponse {
     private String path;
-    private Map<Integer, List<Interval>> intervals;
+    private LinkedHashMap<Integer, List<Interval>> intervals;
     private Integer numberOfSimplices;
+    private String bettiNumbers;
 
     public TDAOneFileResponse() {
-        intervals = new HashMap<>();
+        intervals = new LinkedHashMap<>();
     }
 
 
@@ -18,7 +18,7 @@ public class TDAOneFileResponse {
         this.intervals.put(dimension, interval);
     }
 
-    public Map<Integer, List<Interval>> getIntervals() {
+    public LinkedHashMap<Integer, List<Interval>> getIntervals() {
         return intervals;
     }
 
@@ -36,5 +36,13 @@ public class TDAOneFileResponse {
 
     public String getPath() {
         return path;
+    }
+
+    public String getBettiNumbers() {
+        return bettiNumbers;
+    }
+
+    public void setBettiNumbers(String bettiNumbers) {
+        this.bettiNumbers = bettiNumbers;
     }
 }

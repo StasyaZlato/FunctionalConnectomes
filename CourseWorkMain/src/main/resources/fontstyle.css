@@ -44,3 +44,9 @@
     -fx-fill: -fx-text-background-color;
 }
 
+.titled-pane {
+    -fx-font-family: 'Raleway';
+    -fx-font-size: 20;
+    -fx-text-fill: white;
+}
+

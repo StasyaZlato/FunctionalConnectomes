@@ -12,4 +12,12 @@ public class Interval {
     public boolean isLeftInfinite() {
         return end == Double.POSITIVE_INFINITY;
     }
+
+    public Double getEnd() {
+        return end;
+    }
+
+    public Double getStart() {
+        return start;
+    }
 }

@@ -46,6 +46,8 @@ public class ProcessFile {
 
             vietorisRips.computeIntervals();
 
+            System.out.println(vietorisRips.intervals);
+
             for (int i = 0; i < maxDimensions; i++) {
                 List<pojo.Interval> pInterval = vietorisRips.intervals.getIntervalsAtDimension(i).stream().map(el -> {
                     if (el.isRightInfinite()) {
@@ -60,6 +62,7 @@ public class ProcessFile {
             }
             currentResponse.setPath(this.path);
             currentResponse.setNumberOfSimplices(vietorisRips.numberOfSimplexes);
+            currentResponse.setBettiNumbers(vietorisRips.getBettiNumbers());
             return new TDAResponse(currentResponse);
         }
         else {

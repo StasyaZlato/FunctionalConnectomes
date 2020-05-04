@@ -19,6 +19,13 @@ public class TDAResponse {
         tdaResponse.add(fileResponse);
     }
 
+    public TDAOneFileResponse getOnlyTDAResponse() {
+        if (tdaResponse.isEmpty()) {
+            throw new NullPointerException("Список результатов пуст");
+        }
+        return tdaResponse.get(0);
+    }
+
     public List<TDAOneFileResponse> getTdaResponse() {
         return tdaResponse;
     }
