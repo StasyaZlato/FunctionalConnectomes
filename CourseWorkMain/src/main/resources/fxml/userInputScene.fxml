@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.TextFlow?>
-<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.UserInputSceneController"
@@ -20,14 +15,15 @@
             <Text text="Для того, чтобы начать анализировать данные, нажмите на кнопку " styleClass="text-ordinary"/>
             <Text text="&quot;Выбрать файл&quot;" styleClass="text-blue"/>
             <VBox.margin>
-                <Insets left="20.0" right="20.0" top="20.0" />
+                <Insets left="20.0" right="20.0" top="20.0"/>
             </VBox.margin>
         </TextFlow>
         <TextFlow>
-            <Text text="Если Вы хотите проанализировать одновременно несколько файлов, нажмите кнопку " styleClass="text-ordinary"/>
+            <Text text="Если Вы хотите проанализировать одновременно несколько файлов, нажмите кнопку "
+                  styleClass="text-ordinary"/>
             <Text text="&quot;Выбрать несколько&quot;" styleClass="text-blue"/>
             <VBox.margin>
-                <Insets left="20.0" right="20.0" top="20.0" />
+                <Insets left="20.0" right="20.0" top="20.0"/>
             </VBox.margin>
         </TextFlow>
         <TextFlow>
@@ -47,19 +43,19 @@
         </TextFlow>
     </VBox>
     <HBox alignment="CENTER">
-        <Button styleClass="active" text="Выбрать файл"  fx:id="chooseOneFileBtn" onAction="#chooseOneFile">
+        <Button styleClass="active" text="Выбрать файл" fx:id="chooseOneFileBtn" onAction="#chooseOneFile">
             <HBox.margin>
                 <Insets bottom="20.0" left="20.0" right="20.0"/>
             </HBox.margin>
         </Button>
-        <Button styleClass="active" text="Выбрать несколько"  fx:id="chooseFewFilesBtn" onAction="#chooseFewFiles">
+        <Button styleClass="active" text="Выбрать несколько" fx:id="chooseFewFilesBtn" onAction="#chooseFewFiles">
             <HBox.margin>
                 <Insets bottom="20.0" left="20.0" right="20.0"/>
             </HBox.margin>
         </Button>
     </HBox>
     <stylesheets>
-        <URL value="@fontstyle.css"/>
-        <URL value="@buttons.css"/>
+        <URL value="@../fontstyle.css"/>
+        <URL value="@../buttons.css"/>
     </stylesheets>
 </VBox>

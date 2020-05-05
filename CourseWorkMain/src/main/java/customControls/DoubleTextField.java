@@ -1,11 +1,8 @@
 package customControls;
 
 
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.util.StringConverter;
-import javafx.util.converter.DoubleStringConverter;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -19,9 +16,9 @@ public class DoubleTextField extends TextField {
         UnaryOperator<TextFormatter.Change> filter = c -> {
             String text = c.getControlNewText();
             if (validText.matcher(text).matches()) {
-                return c ;
+                return c;
             } else {
-                return null ;
+                return null;
             }
         };
 

@@ -1,20 +1,17 @@
 package processing;
 
 import NPArray.NDimensionalArray;
-import edu.stanford.math.plex.Plex;
 import edu.stanford.math.plex4.homology.barcodes.BarcodeCollection;
 
-public abstract class ProcessNDimensionalArray {
+public abstract class NDimensionalArrayProcessing {
     protected String type;
     protected double maxFiltrationValue = 1;
     protected int maxDimensions = 3;
     protected BarcodeCollection<Double> intervals;
-
+    protected NDimensionalArray array;
     int numberOfSimplexes;
 
-    protected NDimensionalArray array;
-
-    public ProcessNDimensionalArray(double maxFiltrationValue, int maxDimensions) {
+    public NDimensionalArrayProcessing(double maxFiltrationValue, int maxDimensions) {
         this.maxFiltrationValue = maxFiltrationValue;
         this.maxDimensions = maxDimensions;
     }

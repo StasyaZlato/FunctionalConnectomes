@@ -1,5 +1,7 @@
 package pojo;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +18,9 @@ public class AppData {
         filePath = new ArrayList<>();
     }
 
-    public String getFilePath() {
-        return filePath.get(0);
-    }
-
-    public boolean noFilePathGiven() {
-        return filePath.isEmpty();
+    @JsonGetter("filePath")
+    public List<String> getFilePath() {
+        return filePath;
     }
 
     public void setFilePath(String filePath) {
@@ -29,18 +28,49 @@ public class AppData {
         this.filePath.add(filePath);
     }
 
+    public void setFilePath(List<String> filePath) {
+        this.filePath = filePath;
+    }
+
+    public boolean resultsCorrespondPaths() {
+        if (filePath.size() != results.getTdaResponse().size()) {
+            return false;
+        }
+        for (int i = 0; i < filePath.size(); i++) {
+            if (!results.getTdaResponse().get(i).getPath().equals(filePath.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean noFilePathGiven() {
+        return filePath.isEmpty();
+    }
+
     public boolean isOneFileAction() {
         return filePath.size() == 1;
     }
 
+    @JsonGetter("maxFiltrationValue")
     public double getMaxFiltrationValue() {
         return maxFiltrationValue;
     }
 
+    public void setMaxFiltrationValue(double maxFiltrationValue) {
+        this.maxFiltrationValue = maxFiltrationValue;
+    }
+
+    @JsonGetter("maxDimensions")
     public int getMaxDimensions() {
         return maxDimensions;
     }
 
+    public void setMaxDimensions(int maxDimensions) {
+        this.maxDimensions = maxDimensions;
+    }
+
+    @JsonGetter("complexType")
     public String getComplexType() {
         return complexType;
     }
@@ -49,14 +79,7 @@ public class AppData {
         this.complexType = complexType;
     }
 
-    public void setMaxDimensions(int maxDimensions) {
-        this.maxDimensions = maxDimensions;
-    }
-
-    public void setMaxFiltrationValue(double maxFiltrationValue) {
-        this.maxFiltrationValue = maxFiltrationValue;
-    }
-
+    @JsonGetter("results")
     public TDAResponse getResults() {
         return results;
     }

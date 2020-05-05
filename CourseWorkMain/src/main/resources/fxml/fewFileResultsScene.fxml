@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ResultsSceneController"
+      alignment="TOP_CENTER">
+    <TextFlow>
+        <Text styleClass="text-ordinary" text="Обработка файла"/>
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" top="20.0"/>
+        </VBox.margin>
+    </TextFlow>
+    <ProgressBar visible="false" progress="0">
+        <VBox.margin>
+            <Insets top="20" bottom="20" left="20" right="20"/>
+        </VBox.margin>
+    </ProgressBar>
+    <Accordion/>
+
+    <stylesheets>
+        <URL value="@../fontstyle.css"/>
+        <URL value="@../buttons.css"/>
+        <URL value="@../accordion.css"/>
+    </stylesheets>
+</VBox>

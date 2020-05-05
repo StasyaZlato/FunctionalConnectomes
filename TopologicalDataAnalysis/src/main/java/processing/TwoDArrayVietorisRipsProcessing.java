@@ -7,11 +7,11 @@ import edu.stanford.math.plex4.homology.interfaces.AbstractPersistenceAlgorithm;
 import edu.stanford.math.plex4.metric.impl.ExplicitMetricSpace;
 import edu.stanford.math.plex4.streams.impl.VietorisRipsStream;
 
-public class Process2DArrayVietorisRips extends ProcessNDimensionalArray {
+public class TwoDArrayVietorisRipsProcessing extends NDimensionalArrayProcessing {
 
     VietorisRipsStream<Integer> stream;
 
-    Process2DArrayVietorisRips(double maxFiltrationValue, int maxDimensions) {
+    TwoDArrayVietorisRipsProcessing(double maxFiltrationValue, int maxDimensions) {
         super(maxFiltrationValue, maxDimensions);
         this.type = "Vietoris-Rips";
     }
@@ -21,7 +21,7 @@ public class Process2DArrayVietorisRips extends ProcessNDimensionalArray {
         if (array == null) {
             throw new NullPointerException("Массив не считан!");
         }
-        double[][] correlationMatrix = ((TwoDimensionalArray)array).getArray();
+        double[][] correlationMatrix = ((TwoDimensionalArray) array).getArray();
 
         ExplicitMetricSpace metricSpace = new ExplicitMetricSpace(correlationMatrix);
 

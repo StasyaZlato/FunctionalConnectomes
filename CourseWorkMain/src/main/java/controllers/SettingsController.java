@@ -1,16 +1,13 @@
 package controllers;
 
 import customControls.Toast;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import main.CourseWorkMain;
-
-import javax.swing.*;
-import javafx.event.ActionEvent;
 
 
 public class SettingsController {
@@ -35,8 +32,7 @@ public class SettingsController {
         }
         if (maxFiltrationStr.isEmpty()) {
             maxFiltrationValueD = 1.0;
-        }
-        else {
+        } else {
             maxFiltrationValueD = Double.valueOf(maxFiltrationStr);
         }
 
@@ -47,8 +43,8 @@ public class SettingsController {
         String toastMsg = "Настройки установлены!";
         int toastMsgTime = 3500; //3.5 seconds
         int fadeInTime = 500; //0.5 seconds
-        int fadeOutTime= 500; //0.5 seconds
-        Toast.makeText((Stage)((Node)e.getSource()).getScene().getWindow(), toastMsg, toastMsgTime, fadeInTime, fadeOutTime);
+        int fadeOutTime = 500; //0.5 seconds
+        Toast.makeText((Stage) ((Node) e.getSource()).getScene().getWindow(), toastMsg, toastMsgTime, fadeInTime, fadeOutTime);
     }
 
 }

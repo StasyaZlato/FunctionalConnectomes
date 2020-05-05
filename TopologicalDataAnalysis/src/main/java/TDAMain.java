@@ -27,10 +27,10 @@ public class TDAMain {
         ReadLearningData r = new ReadLearningData();
 
         ProcessNpy processor = new ProcessNpy(
-                "/Users/nastya_iva/Documents/2019-2020/courseWorkPy/Connectomes_project/data/AD_patients_corr_mats/pat_11.npy");
+                "/Users/nastya_iva/Documents/2019-2020/courseWorkPy/Connectomes_project/data/AD_controls_corr_mats/ctrl_8.npy");
 
 //        double[][] points = PointCloudExamples.getRandomSpherePoints(n, d);
-        double[][] points = ((TwoDimensionalArray)(processor.getArray())).getArray();
+        double[][] points = ((TwoDimensionalArray) (processor.getArray())).getArray();
         double max = Arrays.stream(points[0])
                 .max()
                 .getAsDouble();
@@ -43,25 +43,23 @@ public class TDAMain {
 //        stream.finalizeStream();
 
 
-        VietorisRipsStream<Integer> stream = new VietorisRipsStream<>(metricSpace, 1, 3);
-
+        VietorisRipsStream<Integer> stream = new VietorisRipsStream<>(metricSpace, 1, 4);
 
 
         stream.finalizeStream();
 
         System.out.println("Number of simpleces in complex: " + stream.getSize());
 
-        AbstractPersistenceAlgorithm<Simplex> algorithm = Plex4.getDefaultSimplicialAlgorithm(3);
+        AbstractPersistenceAlgorithm<Simplex> algorithm = Plex4.getDefaultSimplicialAlgorithm(4);
 
         BarcodeCollection<Double> intervals = algorithm.computeIntervals(stream);
 
         System.out.println(intervals.getBettiNumbers());
-//        System.out.println(algorithm.computeIndexIntervals(stream));
 
         System.out.println("\nBarcodes for " + d + "-sphere:");
         System.out.println(intervals);
 
-        List<Interval<Double>> i = intervals.getIntervalsAtDimension(1);
+        List<Interval<Double>> i = intervals.getIntervalsAtDimension(2);
 
         BufferedImage bi = BarcodeVisualizer.drawBarcode(i, "ffff", 1);
         File outputfile = new File("saved.png");

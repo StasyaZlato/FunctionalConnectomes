@@ -5,17 +5,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import main.CourseWorkMain;
-import sun.rmi.rmic.Main;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserInputSceneController {
     @FXML
@@ -25,7 +24,7 @@ public class UserInputSceneController {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Numpy arrays", "*.npy");
         fileChooser.getExtensionFilters().add(extFilter);
-        File chosenFile = fileChooser.showOpenDialog(((Node)actionEvent.getSource()).getScene().getWindow());
+        File chosenFile = fileChooser.showOpenDialog(((Node) actionEvent.getSource()).getScene().getWindow());
         if (chosenFile != null) {
             CourseWorkMain.MainLaunch.data.setFilePath(chosenFile.getAbsolutePath());
         }
@@ -34,12 +33,23 @@ public class UserInputSceneController {
     }
 
     public void chooseFewFiles(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Numpy arrays", "*.npy");
+        fileChooser.getExtensionFilters().add(extFilter);
+        List<File> chosenFile = fileChooser.showOpenMultipleDialog(((Node) actionEvent.getSource()).getScene().getWindow());
 
+        List<String> paths = chosenFile.stream().map(File::getAbsolutePath).collect(Collectors.toList());
+
+        if (!chosenFile.isEmpty()) {
+            CourseWorkMain.MainLaunch.data.setFilePath(paths);
+        }
+        changeResultsButton();
+        CourseWorkMain.MainLaunch.openResults();
     }
 
     private void changeResultsButton() {
-        ObservableList<Node> buttonList =  ((VBox)(((BorderPane) CourseWorkMain.MainLaunch.root).getLeft())).getChildren();
-        Button[] buttons = buttonList.stream().map(n -> (Button)n).toArray(Button[]::new);
+        ObservableList<Node> buttonList = ((VBox) (((BorderPane) CourseWorkMain.MainLaunch.root).getLeft())).getChildren();
+        Button[] buttons = buttonList.stream().map(n -> (Button) n).toArray(Button[]::new);
         VBox.setVgrow(buttons[3], Priority.ALWAYS);
         buttons[3].setMaxHeight(Double.MAX_VALUE);
         buttons[3].getStyleClass().clear();

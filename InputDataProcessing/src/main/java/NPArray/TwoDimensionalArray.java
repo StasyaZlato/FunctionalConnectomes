@@ -16,19 +16,18 @@ public class TwoDimensionalArray extends NDimensionalArray {
         array = new double[shape.get(0)][shape.get(1)];
     }
 
-    public void setArray(double[][] array) {
-        this.array = array;
-    }
-
     public double[][] getArray() {
         return array;
+    }
+
+    public void setArray(double[][] array) {
+        this.array = array;
     }
 
     public void setArrayCell(int i, int j, double value) {
         if (checkIndexes(i, j)) {
             array[i][j] = value;
-        }
-        else {
+        } else {
             throw new IndexOutOfBoundsException("Выход за пределы массива");
         }
     }

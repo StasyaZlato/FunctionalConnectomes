@@ -1,33 +1,43 @@
 package main;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.fxml.FXML;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.fxml.FXMLLoader;
-
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pojo.AppData;
 import pojo.Interval;
+import pojo.TDAOneFileResponse;
 import pojo.TDAResponse;
-import processing.ProcessFile;
-import sun.rmi.rmic.Main;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class CourseWorkMain{
+public class CourseWorkMain {
+    public static void main(String[] args) {
+        Application.launch(MainLaunch.class);
+
+        System.out.println("Hello world ");
+    }
+
     public static class MainLaunch extends Application {
         public static Parent root;
         public static Node processScene;
@@ -40,23 +50,14 @@ public class CourseWorkMain{
 
         private static Stage primaryStage;
 
-        public static Stage getPrimaryStage() {
-            return primaryStage;
-        }
-
-        private static void setPrimaryStage(Stage pStage) {
-            MainLaunch.primaryStage = pStage;
-        }
-
         static {
             try {
-                processScene = FXMLLoader.load(MainLaunch.class.getResource("/processScene.fxml"));
-                userInputScene = FXMLLoader.load(MainLaunch.class.getResource("/userInputScene.fxml"));
-                oneFileResultsScene = FXMLLoader.load(MainLaunch.class.getResource("/oneFileResultsScene.fxml"));
-                fewFilesResultsScene = FXMLLoader.load(MainLaunch.class.getResource("/fewFileResultsScene.fxml"));
-                settingsScene = FXMLLoader.load(MainLaunch.class.getResource("/settingsScene.fxml"));
-            }
-            catch (IOException ex){
+                processScene = FXMLLoader.load(MainLaunch.class.getResource("/fxml/processScene.fxml"));
+                userInputScene = FXMLLoader.load(MainLaunch.class.getResource("/fxml/userInputScene.fxml"));
+                oneFileResultsScene = FXMLLoader.load(MainLaunch.class.getResource("/fxml/oneFileResultsScene.fxml"));
+                fewFilesResultsScene = FXMLLoader.load(MainLaunch.class.getResource("/fxml/fewFileResultsScene.fxml"));
+                settingsScene = FXMLLoader.load(MainLaunch.class.getResource("/fxml/settingsScene.fxml"));
+            } catch (IOException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Произошла ошибка во время загрузки сцены! Возможно, архив " +
                         "приложения был поврежден.");
                 alert.show();
@@ -65,38 +66,22 @@ public class CourseWorkMain{
             data = new AppData();
         }
 
-        @Override
-        public void start(Stage primaryStage) throws Exception {
+        public static Stage getPrimaryStage() {
+            return primaryStage;
+        }
 
-            setPrimaryStage(primaryStage);
-
-            root = FXMLLoader.load(getClass().getResource("/main.fxml"));
-            primaryStage.setTitle("Connectomes");
-            Scene scene = new Scene(root, 1000, 800);
-
-            Button currentMainButton = new Button();
-
-            for (Node n : ((VBox)(((BorderPane)root).getLeft())).getChildren()) {
-                if (n.getId().equals("settings")) {
-                    currentMainButton = (Button)n;
-                }
-            }
-            currentMainButton.setMaxHeight(Double.MAX_VALUE);
-
-            VBox.setVgrow(currentMainButton, Priority.ALWAYS);
-
-            primaryStage.setScene(scene);
-            primaryStage.show();
+        private static void setPrimaryStage(Stage pStage) {
+            MainLaunch.primaryStage = pStage;
         }
 
         public static void openUserInput() {
-            ((BorderPane)root).setCenter(userInputScene);
+            ((BorderPane) root).setCenter(userInputScene);
 
             TextFlow currentSettings = null;
 
-            for (Node n : ((VBox)(((BorderPane)root).getCenter())).getChildren()) {
+            for (Node n : ((VBox) (((BorderPane) root).getCenter())).getChildren()) {
                 if (n.getId() != null && n.getId().equals("inputInfoVBox")) {
-                    for (Node node : (((VBox)n).getChildren())) {
+                    for (Node node : (((VBox) n).getChildren())) {
                         if (node.getId() != null && node.getId().equals("currentSettings")) {
                             currentSettings = (TextFlow) node;
                         }
@@ -106,12 +91,12 @@ public class CourseWorkMain{
 
             if (currentSettings != null) {
                 currentSettings.getChildren().clear();
-                Text[] ordinary = new Text[] {
+                Text[] ordinary = new Text[]{
                         new Text("Текущие настройки приложения: тип симплициального комплекса "),
                         new Text(", максимальная величина фильтрации "), new Text(", максимальная размерность ")
                 };
 
-                Text[] emphasized = new Text[] {
+                Text[] emphasized = new Text[]{
                         new Text(data.getComplexType()),
                         new Text(String.valueOf(data.getMaxFiltrationValue())),
                         new Text(String.valueOf(data.getMaxDimensions()))
@@ -136,44 +121,41 @@ public class CourseWorkMain{
         }
 
         public static void openProcess() {
-            ((BorderPane)root).setCenter(processScene);
+            ((BorderPane) root).setCenter(processScene);
         }
 
         public static void openSettings() {
-            ((BorderPane)root).setCenter(settingsScene);
+            ((BorderPane) root).setCenter(settingsScene);
         }
 
         public static void openResults() {
-//            if (data.isOneFileAction()) {
-            openResultsOneFile();
-//            }
+            if (data.isOneFileAction() || data.noFilePathGiven()) {
+                openResultsOneFile();
+            } else {
+                openResultsGroupOfFiles();
+            }
         }
 
         public static void openResultsOneFile() {
-            ((BorderPane)root).setCenter(oneFileResultsScene);
+            ((BorderPane) root).setCenter(oneFileResultsScene);
 
 
-            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
+            ProgressBar progressBar = (ProgressBar) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(1);
             progressBar.progressProperty().unbind();
 
             if (!data.noFilePathGiven()) {
                 if (data.getResults().getTdaResponse().isEmpty() ||
                         !data.getFilePath().equals(data.getResults().getTdaResponse().get(0).getPath())) {
 
-                    ProcessFile processFile = new ProcessFile(data.getFilePath(), data.getComplexType(), data.getMaxDimensions(), data.getMaxFiltrationValue());
                     progressBar.setVisible(true);
-                    showAnalysisIsGoingOn();
-                    Task<TDAResponse> task = new Task<TDAResponse>() {
-                        @Override
-                        public TDAResponse call() {
-                            return processFile.process2DArray();
-                        }
-                    };
+                    showOneFileAnalysisIsGoingOn();
+
+                    ProcessOneFileTask task = new ProcessOneFileTask();
 
                     task.setOnSucceeded(e -> {
                         TDAResponse result = task.getValue();
                         data.setResults(result);
-                        showAnalysisResults();
+                        showOneFileAnalysisResults();
                     });
 
                     progressBar.progressProperty().bind(task.progressProperty());
@@ -181,15 +163,125 @@ public class CourseWorkMain{
 
                     new Thread(task).start();
                 }
-            }
-            else {
+            } else {
                 showNoFileResults();
             }
         }
 
+        private static void openResultsGroupOfFiles() {
+            ((BorderPane) root).setCenter(fewFilesResultsScene);
+
+            ProgressBar progressBar = (ProgressBar) ((VBox) ((fewFilesResultsScene))).getChildren().get(1);
+            progressBar.progressProperty().unbind();
+            progressBar.setProgress(0);
+
+            if (!data.noFilePathGiven()) {
+                if (data.getResults().getTdaResponse().isEmpty() || !data.resultsCorrespondPaths()) {
+
+                    progressBar.setVisible(true);
+                    showGroupOfFileAnalysisIsGoingOn();
+                    Task<TDAResponse> task = new ProcessGroupOfFilesTask();
+
+
+                    Text t1 = new Text("Выполняется анализ файла ");
+                    t1.getStyleClass().add("text-ordinary");
+                    Text t2 = new Text();
+
+                    t2.textProperty().unbind();
+                    t2.textProperty().bind(task.messageProperty());
+
+                    t2.getStyleClass().add("text-blue-small");
+                    ((TextFlow) ((VBox) (fewFilesResultsScene)).getChildren().get(0)).getChildren().clear();
+                    ((TextFlow) ((VBox) (fewFilesResultsScene)).getChildren().get(0)).getChildren().addAll(t1, t2);
+
+                    task.setOnSucceeded(e -> {
+                        TDAResponse result = task.getValue();
+                        data.setResults(result);
+                        showGroupOfFileAnalysisResult();
+                        progressBar.setVisible(false);
+                    });
+
+                    progressBar.progressProperty().bind(task.progressProperty());
+
+
+                    new Thread(task).start();
+                }
+            } else {
+                showNoFileResults();
+            }
+        }
+
+        private static void showGroupOfFileAnalysisResult() {
+            ArrayList<TitledPane> panes = new ArrayList<>();
+
+            int i = 0;
+            for (TDAOneFileResponse r : data.getResults().getTdaResponse()) {
+                TitledPane tp = new TitledPane();
+                tp.setText(r.getPath());
+
+
+                ScrollPane mainFileSP = new ScrollPane();
+
+                try {
+                    BorderPane newLoadedPane = FXMLLoader.load(MainLaunch.class.getResource("/fxml/oneFileResultsScene.fxml"));
+                    ((VBox) (newLoadedPane.getTop())).getChildren().get(1).setVisible(false);
+                    TextFlow infoLabel = (TextFlow) ((VBox) fewFilesResultsScene).getChildren().get(0);
+
+                    newLoadedPane.getBottom().setVisible(true);
+                    HBox topInfoLabel = (HBox) ((VBox) ((newLoadedPane).getTop())).getChildren().get(2);
+
+                    showIntervals(i, false, newLoadedPane);
+
+                    HBox bottomBtns = (HBox) (newLoadedPane.getBottom());
+                    bottomBtns.setVisible(true);
+
+                    topInfoLabel.setVisible(true);
+
+                    Text t1 = new Text("Обработка файла ");
+                    t1.getStyleClass().add("text-ordinary");
+                    Text t2 = new Text(r.getPath());
+                    t2.getStyleClass().add("text-blue-small");
+                    Text t3 = new Text(" завершена");
+                    t3.getStyleClass().add("text-ordinary");
+
+                    infoLabel.getChildren().clear();
+                    infoLabel.getChildren().addAll(t1, t2, t3);
+
+                    Label betti = (Label) topInfoLabel.getChildren().get(0);
+                    betti.setText(String.format("Числа Бетти: %s", r.getBettiNumbers()));
+
+                    newLoadedPane.setCenter(plotBarCode(i));
+
+                    ((Button) (bottomBtns.getChildren().get(0))).setOnAction(event -> {
+                        saveImg(false, newLoadedPane);
+                    });
+
+                    i++;
+
+                    mainFileSP.setContent(newLoadedPane);
+                    tp.setContent(mainFileSP);
+
+                    panes.add(tp);
+                } catch (IOException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Произошла ошибка во время загрузки сцены! Возможно, архив " +
+                            "приложения был поврежден.");
+                    alert.show();
+                }
+            }
+            (((VBox) fewFilesResultsScene).getChildren().get(2)).setVisible(true);
+
+
+            ((Accordion) (((VBox) fewFilesResultsScene).getChildren().get(2))).getPanes().clear();
+            ((Accordion) (((VBox) fewFilesResultsScene).getChildren().get(2))).getPanes().addAll(panes);
+        }
+
+        private static void showGroupOfFileAnalysisIsGoingOn() {
+            ((VBox) fewFilesResultsScene).getChildren().get(2).setVisible(false);
+        }
+
         private static void showNoFileResults() {
-            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
-            TextFlow infoLabel = (TextFlow) ((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
+            ProgressBar progressBar = (ProgressBar) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(1);
+            TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
 
             Text t1 = new Text("Файл для обработки не выбран.");
             t1.getStyleClass().add("text-ordinary");
@@ -198,13 +290,16 @@ public class CourseWorkMain{
             progressBar.setVisible(false);
         }
 
-        private static void showAnalysisResults() {
-            ProgressBar progressBar = (ProgressBar)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(1);
-            TextFlow infoLabel = (TextFlow)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
+        private static void showOneFileAnalysisResults() {
+            ((BorderPane) oneFileResultsScene).getBottom().setVisible(true);
+            ProgressBar progressBar = (ProgressBar) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(1);
+            TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
 
-            HBox topInfoLabel = (HBox)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(2);
+            showIntervals(0, true, null);
 
-            HBox bottomBtns = (HBox) (((BorderPane)oneFileResultsScene).getBottom());
+            HBox topInfoLabel = (HBox) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(2);
+
+            HBox bottomBtns = (HBox) (((BorderPane) oneFileResultsScene).getBottom());
             bottomBtns.setVisible(true);
 
             topInfoLabel.setVisible(true);
@@ -213,7 +308,7 @@ public class CourseWorkMain{
 
             Text t11 = new Text("Обработка файла ");
             t11.getStyleClass().add("text-ordinary");
-            Text t12 = new Text(data.getFilePath());
+            Text t12 = new Text(data.getFilePath().get(0));
             t12.getStyleClass().add("text-blue-small");
             Text t13 = new Text(" завершена");
             t13.getStyleClass().add("text-ordinary");
@@ -221,22 +316,21 @@ public class CourseWorkMain{
             infoLabel.getChildren().clear();
             infoLabel.getChildren().addAll(t11, t12, t13);
 
-            Label betti = (Label)topInfoLabel.getChildren().get(0);
+            Label betti = (Label) topInfoLabel.getChildren().get(0);
             betti.setText(String.format("Числа Бетти: %s", data.getResults().getOnlyTDAResponse().getBettiNumbers()));
 
-           plotBarCode();
+            ((BorderPane) oneFileResultsScene).setCenter(plotBarCode(0));
 
-
-
-
+            ((Button) (bottomBtns.getChildren().get(0))).setOnAction(event -> {
+                saveImg(true, null);
+            });
         }
 
-        private static void plotBarCode() {
-            ScrollPane graphsScroll = (ScrollPane)((BorderPane)oneFileResultsScene).getCenter();
+        private static ScrollPane plotBarCode(int id) {
+            ScrollPane graphsScroll = new ScrollPane();
 
-            VBox graphsPanel = (VBox)graphsScroll.getContent();
-            graphsPanel.getChildren().clear();
-            Set<Map.Entry<Integer, List<Interval>>> entrySet = data.getResults().getOnlyTDAResponse().getIntervals().entrySet();
+            VBox graphsPanel = new VBox();
+            Set<Map.Entry<Integer, List<Interval>>> entrySet = data.getResults().getTdaResponse().get(id).getIntervals().entrySet();
 
             for (Map.Entry<Integer, List<Interval>> entry : entrySet) {
                 NumberAxis xAxis = new NumberAxis();
@@ -256,20 +350,20 @@ public class CourseWorkMain{
                 LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
 
                 lineChart.setTitle(String.format("%d-dimension", entry.getKey()));
-                lineChart.setPrefHeight((entry.getValue().size() + 1) * 8);
+                lineChart.setPrefHeight((entry.getValue().size() + 1) * 10);
 
-//                double max = 0;
+
                 int i = 1;
                 lineChart.setCreateSymbols(false);
+                Collections.sort(entry.getValue(), Collections.reverseOrder());
                 for (Interval in : entry.getValue()) {
                     XYChart.Series<Number, Number> series = new XYChart.Series<>();
                     series.getData().add(new XYChart.Data<>(in.getStart(), i));
-                    if (!in.isLeftInfinite()) {
+                    if (!in.isRightInfinite()) {
                         XYChart.Data<Number, Number> right = new XYChart.Data<>(in.getEnd(), i);
 
                         series.getData().add(right);
-                    }
-                    else {
+                    } else {
                         XYChart.Data<Number, Number> inf = new XYChart.Data<>(data.getMaxFiltrationValue(), i);
 
                         series.getData().add(inf);
@@ -282,34 +376,109 @@ public class CourseWorkMain{
                 graphsPanel.getChildren().add(lineChart);
             }
             graphsScroll.setContent(graphsPanel);
-            ((BorderPane)oneFileResultsScene).setCenter(graphsScroll);
 
-
+            return graphsScroll;
         }
 
-        private static void showAnalysisIsGoingOn() {
-            TextFlow infoLabel = (TextFlow) ((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(0);
-            HBox topInfoLabel = (HBox)((VBox)(((BorderPane)oneFileResultsScene).getTop())).getChildren().get(2);
+        private static void showOneFileAnalysisIsGoingOn() {
+            TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
+            HBox topInfoLabel = (HBox) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(2);
 
             topInfoLabel.setVisible(false);
 
             Text t1 = new Text("Подождите, пока завершится анализ файла ");
             t1.getStyleClass().add("text-ordinary");
-            Text t2 = new Text(data.getFilePath());
+            Text t2 = new Text(data.getFilePath().get(0));
             t2.getStyleClass().add("text-blue-small");
             infoLabel.getChildren().clear();
             infoLabel.getChildren().addAll(t1, t2);
 
-            ((BorderPane)oneFileResultsScene).setRight(null);
+            ((BorderPane) oneFileResultsScene).setLeft(null);
+            ((BorderPane) oneFileResultsScene).getBottom().setVisible(false);
+
         }
-    }
+
+        private static void saveImg(boolean oneFile, BorderPane pane) {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("image files", "*.png");
+            fileChooser.getExtensionFilters().add(extFilter);
+            WritableImage image;
+            if (oneFile) {
+                image = ((ScrollPane) (((BorderPane) oneFileResultsScene).getCenter()))
+                        .getContent()
+                        .snapshot(new SnapshotParameters(), null);
+            } else {
+                image = ((ScrollPane) (pane.getCenter()))
+                        .getContent()
+                        .snapshot(new SnapshotParameters(), null);
+            }
+            File file = fileChooser.showSaveDialog(CourseWorkMain.MainLaunch.getPrimaryStage());
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private static void showIntervals(int id, boolean oneFile, BorderPane pane) {
+            Accordion intervalsAccordion = new Accordion();
+
+            Set<Map.Entry<Integer, List<Interval>>> entrySet = CourseWorkMain.MainLaunch.data.getResults().getTdaResponse().get(id).getIntervals().entrySet();
+
+            for (Map.Entry<Integer, List<Interval>> entry : entrySet) {
+                TitledPane tp = new TitledPane();
+                ScrollPane scroll = new ScrollPane();
+                scroll.setPrefHeight(intervalsAccordion.getHeight());
+                scroll.prefWidth(intervalsAccordion.getWidth());
+                tp.setText(String.format("Dimension %d", entry.getKey()));
+
+                VBox intervals = new VBox();
+                for (Interval in : entry.getValue()) {
+                    if (in.isRightInfinite()) {
+                        intervals.getChildren().add(new Label(String.format("[%f, Infinity)", in.getStart())));
+                    } else
+                        intervals.getChildren().add(new Label(String.format("[%f, %f]", in.getStart(), in.getEnd())));
+                }
+
+                scroll.setContent(intervals);
+
+                tp.setContent(scroll);
+                intervalsAccordion.getPanes().add(tp);
+            }
+
+            if (!oneFile) {
+                pane.setRight(intervalsAccordion);
+            } else {
+                ((BorderPane) CourseWorkMain.MainLaunch.oneFileResultsScene).setRight(intervalsAccordion);
+            }
+        }
 
 
+        @Override
+        public void start(Stage primaryStage) throws Exception {
 
-    public static void main(String[] args) {
-        Application.launch(MainLaunch.class);
+            setPrimaryStage(primaryStage);
 
-        System.out.println("Hello world ");
+            root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+            primaryStage.setTitle("Connectomes");
+            Scene scene = new Scene(root, 1200, 800);
+
+            Button currentMainButton = new Button();
+
+            for (Node n : ((VBox) (((BorderPane) root).getLeft())).getChildren()) {
+                if (n.getId().equals("settings")) {
+                    currentMainButton = (Button) n;
+                }
+            }
+            currentMainButton.setMaxHeight(Double.MAX_VALUE);
+
+            VBox.setVgrow(currentMainButton, Priority.ALWAYS);
+
+            primaryStage.setScene(scene);
+            primaryStage.show();
+        }
+
+
     }
 
 }

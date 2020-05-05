@@ -6,7 +6,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import main.CourseWorkMain;
-import sun.rmi.rmic.Main;
 
 import java.io.IOException;
 
@@ -25,7 +24,7 @@ public class MainMenuController {
     Button results;
 
     public void openNextTab(MouseEvent mouseEvent) throws IOException {
-        Button b = (Button)(mouseEvent.getSource());
+        Button b = (Button) (mouseEvent.getSource());
 
         switch (b.getId()) {
             case "settings":

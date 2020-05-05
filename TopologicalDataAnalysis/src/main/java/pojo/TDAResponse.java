@@ -1,5 +1,7 @@
 package pojo;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class TDAResponse {
         return tdaResponse.get(0);
     }
 
+    @JsonGetter("tdaResponse")
     public List<TDAOneFileResponse> getTdaResponse() {
         return tdaResponse;
     }

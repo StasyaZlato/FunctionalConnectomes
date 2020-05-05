@@ -1,5 +1,7 @@
 package pojo;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -18,26 +20,29 @@ public class TDAOneFileResponse {
         this.intervals.put(dimension, interval);
     }
 
+    @JsonGetter("intervals")
     public LinkedHashMap<Integer, List<Interval>> getIntervals() {
         return intervals;
+    }
+
+    @JsonGetter("numberOfSimplices")
+    public Integer getNumberOfSimplices() {
+        return numberOfSimplices;
     }
 
     public void setNumberOfSimplices(Integer numberOfSimplices) {
         this.numberOfSimplices = numberOfSimplices;
     }
 
-    public Integer getNumberOfSimplices() {
-        return numberOfSimplices;
+    public String getPath() {
+        return path;
     }
 
     public void setPath(String path) {
         this.path = path;
     }
 
-    public String getPath() {
-        return path;
-    }
-
+    @JsonGetter("bettiNumbers")
     public String getBettiNumbers() {
         return bettiNumbers;
     }

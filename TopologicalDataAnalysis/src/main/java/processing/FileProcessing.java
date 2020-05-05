@@ -1,7 +1,7 @@
 package processing;
 
-import NPArray.*;
-import edu.stanford.math.plex4.homology.barcodes.Interval;
+import NPArray.NDimensionalArray;
+import NPArray.TwoDimensionalArray;
 import pojo.TDAOneFileResponse;
 import pojo.TDAResponse;
 import process.ProcessNpy;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class ProcessFile {
+public class FileProcessing {
     public final String path;
 
     NDimensionalArray array;
@@ -19,14 +19,14 @@ public class ProcessFile {
     private int maxDimensions = 3;
     private double maxFiltrationValue = 1;
 
-    public ProcessFile(String path) {
+    public FileProcessing(String path) {
         this.path = path;
         ProcessNpy process = new ProcessNpy(path);
 
         array = process.getArray();
     }
 
-    public ProcessFile(String path, String complexType, int maxDimensions, double maxFiltrationValue) {
+    public FileProcessing(String path, String complexType, int maxDimensions, double maxFiltrationValue) {
         this(path);
         this.complexType = complexType;
         this.maxDimensions = maxDimensions;
@@ -41,7 +41,7 @@ public class ProcessFile {
         TDAOneFileResponse currentResponse = new TDAOneFileResponse();
 
         if (complexType.equals("Vietoris-Rips")) {
-            Process2DArrayVietorisRips vietorisRips = new Process2DArrayVietorisRips(maxFiltrationValue, maxDimensions);
+            TwoDArrayVietorisRipsProcessing vietorisRips = new TwoDArrayVietorisRipsProcessing(maxFiltrationValue, maxDimensions);
             vietorisRips.setArray(array);
 
             vietorisRips.computeIntervals();
@@ -52,8 +52,7 @@ public class ProcessFile {
                 List<pojo.Interval> pInterval = vietorisRips.intervals.getIntervalsAtDimension(i).stream().map(el -> {
                     if (el.isRightInfinite()) {
                         return new pojo.Interval(el.getStart(), Double.POSITIVE_INFINITY);
-                    }
-                    else {
+                    } else {
                         return new pojo.Interval(el.getStart(), el.getEnd());
                     }
                 }).collect(Collectors.toList());
@@ -64,8 +63,7 @@ public class ProcessFile {
             currentResponse.setNumberOfSimplices(vietorisRips.numberOfSimplexes);
             currentResponse.setBettiNumbers(vietorisRips.getBettiNumbers());
             return new TDAResponse(currentResponse);
-        }
-        else {
+        } else {
             return null;
         }
     }

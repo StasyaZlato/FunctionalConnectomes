@@ -1,6 +1,6 @@
-import java.io.IOException;
-
 import process.ProcessNpy;
+
+import java.io.IOException;
 
 public class ProcessDataMain {
 

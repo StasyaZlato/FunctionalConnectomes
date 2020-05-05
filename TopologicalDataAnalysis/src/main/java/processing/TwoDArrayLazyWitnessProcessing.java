@@ -1,8 +1,8 @@
 package processing;
 
-public class Process2DArrayLazyWitness extends ProcessNDimensionalArray {
+public class TwoDArrayLazyWitnessProcessing extends NDimensionalArrayProcessing {
 
-    Process2DArrayLazyWitness(double maxFiltrationValue, int maxDimensions) {
+    TwoDArrayLazyWitnessProcessing(double maxFiltrationValue, int maxDimensions) {
         super(maxFiltrationValue, maxDimensions);
     }
 

@@ -38,6 +38,9 @@ dependencies {
     compile project(":InputDataProcessing")
 
     compile project(":TopologicalDataAnalysis")
+//    compile group: 'org.json', name: 'json', version: '20190722'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+
 
 }
 
