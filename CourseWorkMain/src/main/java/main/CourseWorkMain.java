@@ -29,6 +29,9 @@ import pojo.TDAResponse;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class CourseWorkMain {
@@ -292,6 +295,10 @@ public class CourseWorkMain {
 
         private static void showOneFileAnalysisResults() {
             ((BorderPane) oneFileResultsScene).getBottom().setVisible(true);
+            if (((BorderPane) oneFileResultsScene).getCenter() != null) {
+                ((BorderPane) oneFileResultsScene).getCenter().setVisible(true);
+            }
+
             ProgressBar progressBar = (ProgressBar) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(1);
             TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
 
@@ -384,6 +391,10 @@ public class CourseWorkMain {
             TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
             HBox topInfoLabel = (HBox) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(2);
 
+            if (((BorderPane) oneFileResultsScene).getCenter() != null) {
+                ((BorderPane) oneFileResultsScene).getCenter().setVisible(false);
+            }
+
             topInfoLabel.setVisible(false);
 
             Text t1 = new Text("Подождите, пока завершится анализ файла ");
@@ -450,6 +461,67 @@ public class CourseWorkMain {
                 pane.setRight(intervalsAccordion);
             } else {
                 ((BorderPane) CourseWorkMain.MainLaunch.oneFileResultsScene).setRight(intervalsAccordion);
+            }
+        }
+
+        public static void updateLearningScene(File path) {
+
+            List<String> directories = Arrays.asList(path.list((current, name) -> new File(current, name).isDirectory()));
+
+
+//            boolean correctFolder = true;
+
+            for (String el : new String[]{"AD_controls_corr_mats", "AD_controls_corr_mats_intime", "AD_patients_corr_mats", "AD_patients_corr_mats_intime"}) {
+                if (!directories.contains(el)) {
+//                    correctFolder = false;
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Выбранная папка не содержит требуемых данных");
+                    alert.show();
+                    return;
+                }
+            }
+
+//            if (correctFolder) {
+            Path pathToLearningData = Paths.get(path.toURI()).resolve("learning");
+            Path pathToSettings = pathToLearningData.resolve(String.format("%s_%d_%s",
+                    data.getComplexType(),
+                    data.getMaxDimensions(),
+                    String.valueOf(data.getMaxFiltrationValue()).replace(".", "_")));
+
+            Label label = (Label) (((VBox) processScene).getChildren().get(3));
+
+
+            if (Files.exists(pathToSettings)) {
+                LoadJsonTask task = new LoadJsonTask(pathToSettings.toString());
+                task.setOnSucceeded(event -> {
+                    label.textProperty().unbind();
+                    label.setText("Данные, полученные во время обучения ранее, загружены.");
+                    data.setLearningData(task.getValue());
+                });
+
+                new Thread(task).start();
+            } else {
+                ProgressBar progressBar = (ProgressBar) ((VBox) processScene).getChildren().get(2);
+
+                progressBar.setVisible(true);
+                progressBar.setProgress(0);
+
+                data.setLearningDataFolder(path.getAbsolutePath());
+                ProcessLearningDataTask task = new ProcessLearningDataTask();
+
+                progressBar.progressProperty().unbind();
+                progressBar.progressProperty().bind(task.progressProperty());
+
+                label.textProperty().unbind();
+                label.textProperty().bind(task.messageProperty());
+
+                task.setOnSucceeded(event -> {
+                    label.textProperty().unbind();
+                    label.setText(String.format("Обучение завершено. Данные сохранены %s", task.getMessage()));
+                    data.setLearningData(task.getValue());
+                    progressBar.setVisible(false);
+                });
+
+                new Thread(task).start();
             }
         }
 

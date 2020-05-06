@@ -2,18 +2,48 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
-<VBox alignment="CENTER" prefHeight="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
-    <Label text="Добро пожаловать в приложение...!&#13;Перед тем, как можно будет анализировать данные, необходимо обработать обучающую выборку. Начать обработку? Это может занять некоторое время."
-           textAlignment="CENTER" wrapText="true">
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/10.0.2-internal"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ProcessSceneController">
+    <TextFlow >
+        <Text styleClass="text-ordinary"
+              text="Чтобы иметь возможность получить вероятность наличия у пациента болезни Альцгеймера, необходимо обработать набор обучающих данных с текущими настройками. "/>
+        <Text styleClass="text-ordinary"
+              text="Для обработки выберите папку с входными данными. Если обучение с данными настройками ранее совершалось, оттуда будут взяты результаты.&#13;" />
+        <Text styleClass="text-ordinary"
+              text="Если вы еще не выбрали желаемые настройки, рекомендуется сделать это, иначе обучение будет произведено с дефолтными.&#13;"/>
+        <Text styleClass="text-ordinary-small"
+              text="В папке с обучающими данными должны содержаться 4 папки: " />
+        <Text styleClass="text-blue-small"
+              text="AD_controls_corr_mats, AD_controls_corr_mats_intime, AD_patients_corr_mats, AD_patients_corr_mats_intime.&#13;"/>
+        <Text styleClass="text-ordinary-small"
+              text="В папке learning с результатами обучения должны находиться папки формата " />
+        <Text styleClass="text-blue-small"
+              text="&#60;имя_комплекса&#62;_&#60;размерность&#62;_&#60;величина_фильтрации&#62;." />
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        </VBox.margin>
+    </TextFlow>
+    <HBox alignment="CENTER">
+        <Button styleClass="active" text="Выбрать данные для обучения" onAction="#chooseLearningData">
+            <HBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </HBox.margin>
+        </Button>
+
+    </HBox>
+    <ProgressBar visible="false"/>
+    <Label wrapText="true" styleClass="text-ordinary-small">
         <VBox.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
         </VBox.margin>
     </Label>
-    <Button styleClass="active" text="Начать обработку"/>
     <stylesheets>
         <URL value="@../fontstyle.css"/>
         <URL value="@../buttons.css"/>

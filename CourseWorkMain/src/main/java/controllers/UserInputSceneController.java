@@ -27,9 +27,9 @@ public class UserInputSceneController {
         File chosenFile = fileChooser.showOpenDialog(((Node) actionEvent.getSource()).getScene().getWindow());
         if (chosenFile != null) {
             CourseWorkMain.MainLaunch.data.setFilePath(chosenFile.getAbsolutePath());
+            changeResultsButton();
+            CourseWorkMain.MainLaunch.openResults();
         }
-        changeResultsButton();
-        CourseWorkMain.MainLaunch.openResults();
     }
 
     public void chooseFewFiles(ActionEvent actionEvent) {
@@ -42,9 +42,9 @@ public class UserInputSceneController {
 
         if (!chosenFile.isEmpty()) {
             CourseWorkMain.MainLaunch.data.setFilePath(paths);
+            changeResultsButton();
+            CourseWorkMain.MainLaunch.openResults();
         }
-        changeResultsButton();
-        CourseWorkMain.MainLaunch.openResults();
     }
 
     private void changeResultsButton() {

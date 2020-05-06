@@ -2,7 +2,7 @@ package NPArray;
 
 import java.util.ArrayList;
 
-public class ThreeDimensionalArray<T> extends NDimensionalArray {
+public class ThreeDimensionalArray extends NDimensionalArray {
 
     private double[][][] array;
 

@@ -1,17 +1,22 @@
 package pojo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AppData {
     private double maxFiltrationValue = 1;
     private int maxDimensions = 3;
     private String complexType = "Vietoris-Rips";
     private List<String> filePath;
+    private String learningDataFolder;
 
     private TDAResponse results;
+
+    private Map<String, TDAResponse> learningData;
 
     public AppData() {
         results = new TDAResponse();
@@ -86,5 +91,22 @@ public class AppData {
 
     public void setResults(TDAResponse results) {
         this.results = results;
+    }
+
+    public void setLearningDataFolder(String learningDataFolder) {
+        this.learningDataFolder = learningDataFolder;
+    }
+
+    public String getLearningDataFolder() {
+        return learningDataFolder;
+    }
+
+    public void setLearningData(Map<String, TDAResponse> learningData) {
+        this.learningData = learningData;
+    }
+
+    @JsonIgnore
+    public Map<String, TDAResponse> getLearningData() {
+        return learningData;
     }
 }

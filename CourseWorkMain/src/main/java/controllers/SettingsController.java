@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import main.CourseWorkMain;
+import static main.CourseWorkMain.MainLaunch.data;
 
 
 public class SettingsController {
@@ -36,9 +36,9 @@ public class SettingsController {
             maxFiltrationValueD = Double.valueOf(maxFiltrationStr);
         }
 
-        CourseWorkMain.MainLaunch.data.setComplexType(complexType.getValue());
-        CourseWorkMain.MainLaunch.data.setMaxFiltrationValue(maxFiltrationValueD);
-        CourseWorkMain.MainLaunch.data.setMaxDimensions(Integer.parseInt(maxDimensions.getValue()));
+        data.setComplexType(complexType.getValue());
+        data.setMaxFiltrationValue(maxFiltrationValueD);
+        data.setMaxDimensions(Integer.parseInt(maxDimensions.getValue()));
 
         String toastMsg = "Настройки установлены!";
         int toastMsgTime = 3500; //3.5 seconds
@@ -46,5 +46,4 @@ public class SettingsController {
         int fadeOutTime = 500; //0.5 seconds
         Toast.makeText((Stage) ((Node) e.getSource()).getScene().getWindow(), toastMsg, toastMsgTime, fadeInTime, fadeOutTime);
     }
-
 }

@@ -40,10 +40,9 @@ public class ReadLearningData {
 
 
     public List<String> getFiles(String dir) {
-        try (Stream<Path> walk = Files.walk(Paths.get(path + dir))) {
-            List<String> lst = walk.filter(Files::isRegularFile)
+        try (Stream<Path> walk = Files.walk(Paths.get(path, dir))) {
+            List<String> lst = walk.filter(f ->  f.getFileName().toString().endsWith(".npy") && Files.isRegularFile(f))
                     .map(Path::toString).collect(Collectors.toList());
-            lst.forEach(System.out::println);
             return lst;
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,4 +50,23 @@ public class ReadLearningData {
         }
     }
 
+    public List<String> getControls() {
+        return controls;
+    }
+
+    public List<String> getControlsIntime() {
+        return controlsIntime;
+    }
+
+    public List<String> getPatients() {
+        return patients;
+    }
+
+    public List<String> getPatientsIntime() {
+        return patientsIntime;
+    }
+
+    public int getSize() {
+        return controls.size() + controlsIntime.size() + patients.size() + patientsIntime.size();
+    }
 }

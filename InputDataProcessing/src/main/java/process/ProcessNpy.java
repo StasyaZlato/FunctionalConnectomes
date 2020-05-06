@@ -97,13 +97,13 @@ public class ProcessNpy {
 
         readNDimensionalArray(bytes, j + 1);
 
-        System.out.printf("magic = %s\nmajorV = %d\nminorV = %d\nheaderLength = %d\nheader = \"%s\"\n",
-                this.magic, majorV, minorV, headerLength, header);
-
-        System.out.print("shape: ");
-        for (int el : shape) {
-            System.out.printf(" %d", el);
-        }
+//        System.out.printf("magic = %s\nmajorV = %d\nminorV = %d\nheaderLength = %d\nheader = \"%s\"\n",
+//                this.magic, majorV, minorV, headerLength, header);
+//
+//        System.out.print("shape: ");
+//        for (int el : shape) {
+//            System.out.printf(" %d", el);
+//        }
     }
 
     double readNextDouble(byte[] bytes, int start) {

@@ -1,17 +1,23 @@
 package pojo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 
 public class Interval implements Comparable<Interval> {
     Double start;
     Double end;
 
+    public Interval() {
+
+    }
+
     public Interval(Double start, Double end) {
         this.start = start;
         this.end = end;
     }
 
+    @JsonIgnore
     public boolean isRightInfinite() {
         return end == Double.POSITIVE_INFINITY;
     }

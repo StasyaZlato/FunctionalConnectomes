@@ -1,6 +1,8 @@
 package pojo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ public class TDAResponse {
         tdaResponse.add(fileResponse);
     }
 
+    @JsonIgnore
     public TDAOneFileResponse getOnlyTDAResponse() {
         if (tdaResponse.isEmpty()) {
             throw new NullPointerException("Список результатов пуст");
