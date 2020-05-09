@@ -2,6 +2,8 @@ package main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.concurrent.Task;
+import pojo.ClusterizedTDAResponse;
+import pojo.Response;
 import pojo.TDAResponse;
 
 import java.io.File;
@@ -10,7 +12,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LoadJsonTask extends Task<Map<String, TDAResponse>> {
+import static main.CourseWorkMain.MainLaunch.data;
+
+public class LoadJsonTask extends Task<Map<String, Response>> {
 
     private String pathToData;
 
@@ -19,11 +23,11 @@ public class LoadJsonTask extends Task<Map<String, TDAResponse>> {
     }
 
     @Override
-    protected Map<String, TDAResponse> call() throws Exception {
+    protected Map<String, Response> call() throws Exception {
 
         List<String> files = Arrays.stream(Objects.requireNonNull(new File(pathToData).listFiles())).map(File::getAbsolutePath).collect(Collectors.toList());
 
-        Map<String, TDAResponse> map = new HashMap<>();
+        Map<String, Response> map = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -46,8 +50,12 @@ public class LoadJsonTask extends Task<Map<String, TDAResponse>> {
                 TDAResponse patIntime = objectMapper.readValue(json, TDAResponse.class);
                 map.put("patIntime", patIntime);
             }
+            else if (f.contains("clusters.json")) {
+                ClusterizedTDAResponse clusters = objectMapper.readValue(json, ClusterizedTDAResponse.class);
+                map.put("clusters", clusters);
+            }
         }
-        if (map.size() != 4) {
+        if (map.size() != 5) {
             return null;
         }
         return map;

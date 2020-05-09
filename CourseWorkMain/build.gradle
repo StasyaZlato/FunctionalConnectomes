@@ -4,6 +4,17 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'main.CourseWorkMain'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 

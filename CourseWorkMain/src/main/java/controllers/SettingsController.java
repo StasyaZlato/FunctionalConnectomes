@@ -11,8 +11,8 @@ import static main.CourseWorkMain.MainLaunch.data;
 
 
 public class SettingsController {
-    @FXML
-    ChoiceBox<String> complexType;
+//    @FXML
+//    ChoiceBox<String> complexType;
 
     @FXML
     TextField maxFiltrationValue;
@@ -36,7 +36,7 @@ public class SettingsController {
             maxFiltrationValueD = Double.valueOf(maxFiltrationStr);
         }
 
-        data.setComplexType(complexType.getValue());
+//        data.setComplexType(complexType.getValue());
         data.setMaxFiltrationValue(maxFiltrationValueD);
         data.setMaxDimensions(Integer.parseInt(maxDimensions.getValue()));
 

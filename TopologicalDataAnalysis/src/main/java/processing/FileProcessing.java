@@ -6,6 +6,7 @@ import pojo.TDAOneFileResponse;
 import pojo.TDAResponse;
 import process.ProcessNpy;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +47,6 @@ public class FileProcessing {
 
             vietorisRips.computeIntervals();
 
-            System.out.println(vietorisRips.intervals);
-
             for (int i = 0; i < maxDimensions; i++) {
                 List<pojo.Interval> pInterval = vietorisRips.intervals.getIntervalsAtDimension(i).stream().map(el -> {
                     if (el.isRightInfinite()) {
@@ -66,5 +65,14 @@ public class FileProcessing {
         } else {
             return null;
         }
+    }
+
+    public TDAResponse process2DArray(boolean isPatient) {
+        TDAOneFileResponse currentResponse = process2DArray().getOnlyTDAResponse();
+        currentResponse.setPatient(isPatient);
+        currentResponse.setProbability(1);
+        currentResponse.setProbIsComputed(true);
+
+        return new TDAResponse(currentResponse);
     }
 }

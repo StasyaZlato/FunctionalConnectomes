@@ -25,7 +25,20 @@
                         <Insets bottom="20.0" left="20.0" right="20.0"/>
                     </HBox.margin>
                 </Label>
+                <Label text="Simplexes">
+                    <HBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0"/>
+                    </HBox.margin>
+                </Label>
+                <VBox.margin>
+                    <Insets left="20.0" right="20.0" top="20.0"/>
+                </VBox.margin>
             </HBox>
+            <Label text="probs" visible="false">
+                <VBox.margin>
+                    <Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/>
+                </VBox.margin>
+            </Label>
         </VBox>
     </top>
     <center>

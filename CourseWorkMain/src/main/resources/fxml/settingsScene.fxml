@@ -17,22 +17,27 @@
             </VBox.margin>
         </Label>
 
-        <Label text="Выберите тип симплициального комплекса: " wrapText="true">
+        <Label text="Тип симплициального комплекса: " wrapText="true">
             <VBox.margin>
                 <Insets left="20.0" right="20.0" top="20.0"/>
             </VBox.margin>
         </Label>
-        <ChoiceBox value="Vietoris-Rips" fx:id="complexType">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Vietoris-Rips"/>
-                    <String fx:value="Lazy witness"/>
-                </FXCollections>
-            </items>
+<!--        <ChoiceBox value="Vietoris-Rips" fx:id="complexType">-->
+<!--            <items>-->
+<!--                <FXCollections fx:factory="observableArrayList">-->
+<!--                    <String fx:value="Vietoris-Rips"/>-->
+<!--                    <String fx:value="Lazy witness"/>-->
+<!--                </FXCollections>-->
+<!--            </items>-->
+<!--            <VBox.margin>-->
+<!--                <Insets bottom="20.0" left="20.0" right="20.0"/>-->
+<!--            </VBox.margin>-->
+<!--        </ChoiceBox>-->
+        <Label text="Vietoris-Rips" wrapText="true" styleClass="text-blue">
             <VBox.margin>
-                <Insets bottom="20.0" left="20.0" right="20.0"/>
+                <Insets left="20.0" right="20.0" top="20.0"/>
             </VBox.margin>
-        </ChoiceBox>
+        </Label>
         <Label text="Введите максимальную величину фильтрации:" wrapText="true">
             <VBox.margin>
                 <Insets left="20.0" right="20.0" top="20.0"/>

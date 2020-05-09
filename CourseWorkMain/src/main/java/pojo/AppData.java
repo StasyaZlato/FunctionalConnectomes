@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ public class AppData {
     private TDAResponse results;
 
     private Map<String, TDAResponse> learningData;
+
+    private ClusterizedTDAResponse clusters;
 
     public AppData() {
         results = new TDAResponse();
@@ -101,12 +104,31 @@ public class AppData {
         return learningDataFolder;
     }
 
-    public void setLearningData(Map<String, TDAResponse> learningData) {
+    public void setLearningData(Map<String, Response> learningData) {
+        this.learningData = new HashMap<>();
+        this.learningData.put("contr", (TDAResponse)learningData.get("contr"));
+        this.learningData.put("pat", (TDAResponse)learningData.get("pat"));
+        this.learningData.put("contrIntime", (TDAResponse)learningData.get("contrIntime"));
+        this.learningData.put("patIntime", (TDAResponse)learningData.get("patIntime"));
+
+        this.clusters = (ClusterizedTDAResponse)learningData.get("clusters");
+    }
+
+    public void setLearningData(Map<String, TDAResponse> learningData, boolean noClusters) {
         this.learningData = learningData;
     }
 
     @JsonIgnore
     public Map<String, TDAResponse> getLearningData() {
         return learningData;
+    }
+
+    @JsonIgnore
+    public ClusterizedTDAResponse getClusters() {
+        return clusters;
+    }
+
+    public void setClusters(ClusterizedTDAResponse clusters) {
+        this.clusters = clusters;
     }
 }

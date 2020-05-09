@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static main.CourseWorkMain.MainLaunch.data;
@@ -37,28 +35,32 @@ public class ProcessLearningDataTask extends Task<Map<String, TDAResponse>> {
 
         int i = 0;
 
-        for (String readPath: reader.getControls()) {
-            process(contr, readPath);
+        for (String readPath : reader.getControls()) {
+            messageConstructor(readPath);
+
+            process(contr, readPath, false);
 
             i++;
             this.updateProgress(i, maxNum);
         }
 
-        for (String readPath: reader.getPatients()) {
-            process(pat, readPath);
+        for (String readPath : reader.getPatients()) {
+            messageConstructor(readPath);
+
+            process(pat, readPath, true);
 
             i++;
             this.updateProgress(i, maxNum);
         }
 
-        for (String readPath: reader.getControlsIntime()) {
-            this.updateMessage(readPath);
+        for (String readPath : reader.getControlsIntime()) {
+            messageConstructor(readPath);
             contrIn.addElement(new TDAOneFileResponse());
             i++;
             this.updateProgress(i, maxNum);
         }
-        for (String readPath: reader.getPatientsIntime()) {
-            this.updateMessage(readPath);
+        for (String readPath : reader.getPatientsIntime()) {
+            messageConstructor(readPath);
             patIn.addElement(new TDAOneFileResponse());
 
             i++;
@@ -104,19 +106,22 @@ public class ProcessLearningDataTask extends Task<Map<String, TDAResponse>> {
         return map;
     }
 
-    @Override
-    protected void updateMessage(String message) {
+
+    protected void messageConstructor(String message) {
         super.updateMessage(String.format("Обработка файла %s", message));
     }
 
-    private void process(TDAResponse resp, String readPath) {
+    private void process(TDAResponse resp, String readPath, boolean isPatient) {
         this.updateMessage(readPath);
 
         FileProcessing processFile = new FileProcessing(readPath,
                 data.getComplexType(),
                 data.getMaxDimensions(),
                 data.getMaxFiltrationValue());
-
-        resp.addElement(processFile.process2DArray().getOnlyTDAResponse());
+        TDAOneFileResponse response = processFile.process2DArray().getOnlyTDAResponse();
+        response.setProbIsComputed(true);
+        response.setProbability(1);
+        response.setPatient(isPatient);
+        resp.addElement(response);
     }
 }

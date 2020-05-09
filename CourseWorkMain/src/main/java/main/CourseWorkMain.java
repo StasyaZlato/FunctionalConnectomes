@@ -250,6 +250,20 @@ public class CourseWorkMain {
                     infoLabel.getChildren().clear();
                     infoLabel.getChildren().addAll(t1, t2, t3);
 
+                    Label simplices = (Label) topInfoLabel.getChildren().get(1);
+                    simplices.setText(String.format("Число симплексов: %d", r.getNumberOfSimplices()));
+
+                    Label probs = (Label) ((VBox) ((newLoadedPane).getTop())).getChildren().get(3);
+
+                    if (data.getClusters() != null) {
+                        probs.setText(String.format("Болезнь Альцгеймера: %b с вероятностью %f", r.getPatient(),
+                                r.getProbability()));
+                    }
+                    else {
+                        probs.setText("Обучающие данные не выбраны, невозможно посчитать вероятность наличия болезни Альцгеймера.");
+                    }
+                    probs.setVisible(true);
+
                     Label betti = (Label) topInfoLabel.getChildren().get(0);
                     betti.setText(String.format("Числа Бетти: %s", r.getBettiNumbers()));
 
@@ -326,6 +340,21 @@ public class CourseWorkMain {
             Label betti = (Label) topInfoLabel.getChildren().get(0);
             betti.setText(String.format("Числа Бетти: %s", data.getResults().getOnlyTDAResponse().getBettiNumbers()));
 
+            Label simplices = (Label) topInfoLabel.getChildren().get(1);
+            simplices.setText(String.format("Число симплексов: %d", data.getResults().getOnlyTDAResponse().getNumberOfSimplices()));
+
+            Label probs = (Label) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(3);
+
+            if (data.getClusters() != null) {
+                probs.setText(String.format("Болезнь Альцгеймера: %b с вероятностью %f", data.getResults().getOnlyTDAResponse().getPatient(),
+                        data.getResults().getOnlyTDAResponse().getProbability()));
+            }
+            else {
+                probs.setText("Обучающие данные не выбраны, невозможно посчитать вероятность болезни Альцгеймера. ");
+            }
+
+            probs.setVisible(true);
+
             ((BorderPane) oneFileResultsScene).setCenter(plotBarCode(0));
 
             ((Button) (bottomBtns.getChildren().get(0))).setOnAction(event -> {
@@ -391,6 +420,10 @@ public class CourseWorkMain {
             TextFlow infoLabel = (TextFlow) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(0);
             HBox topInfoLabel = (HBox) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(2);
 
+            Label probLabel = (Label) ((VBox) (((BorderPane) oneFileResultsScene).getTop())).getChildren().get(3);
+            probLabel.setVisible(false);
+
+
             if (((BorderPane) oneFileResultsScene).getCenter() != null) {
                 ((BorderPane) oneFileResultsScene).getCenter().setVisible(false);
             }
@@ -404,9 +437,11 @@ public class CourseWorkMain {
             infoLabel.getChildren().clear();
             infoLabel.getChildren().addAll(t1, t2);
 
-            ((BorderPane) oneFileResultsScene).setLeft(null);
+//            ((BorderPane) oneFileResultsScene).setLeft(null);
             ((BorderPane) oneFileResultsScene).getBottom().setVisible(false);
-
+            if (((BorderPane) oneFileResultsScene).getRight() != null) {
+                ((BorderPane) oneFileResultsScene).getRight().setVisible(false);
+            }
         }
 
         private static void saveImg(boolean oneFile, BorderPane pane) {
@@ -468,19 +503,14 @@ public class CourseWorkMain {
 
             List<String> directories = Arrays.asList(path.list((current, name) -> new File(current, name).isDirectory()));
 
-
-//            boolean correctFolder = true;
-
             for (String el : new String[]{"AD_controls_corr_mats", "AD_controls_corr_mats_intime", "AD_patients_corr_mats", "AD_patients_corr_mats_intime"}) {
                 if (!directories.contains(el)) {
-//                    correctFolder = false;
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Выбранная папка не содержит требуемых данных");
                     alert.show();
                     return;
                 }
             }
 
-//            if (correctFolder) {
             Path pathToLearningData = Paths.get(path.toURI()).resolve("learning");
             Path pathToSettings = pathToLearningData.resolve(String.format("%s_%d_%s",
                     data.getComplexType(),
@@ -488,6 +518,7 @@ public class CourseWorkMain {
                     String.valueOf(data.getMaxFiltrationValue()).replace(".", "_")));
 
             Label label = (Label) (((VBox) processScene).getChildren().get(3));
+            Label clusterizationLabel = (Label) (((VBox) processScene).getChildren().get(4));
 
 
             if (Files.exists(pathToSettings)) {
@@ -499,6 +530,8 @@ public class CourseWorkMain {
                 });
 
                 new Thread(task).start();
+
+
             } else {
                 ProgressBar progressBar = (ProgressBar) ((VBox) processScene).getChildren().get(2);
 
@@ -507,6 +540,16 @@ public class CourseWorkMain {
 
                 data.setLearningDataFolder(path.getAbsolutePath());
                 ProcessLearningDataTask task = new ProcessLearningDataTask();
+                ClusterizationTask clusterizationTask = new ClusterizationTask();
+                clusterizationLabel.textProperty().unbind();
+                clusterizationLabel.textProperty().bind(clusterizationTask.messageProperty());
+                clusterizationLabel.setVisible(false);
+
+                clusterizationTask.setOnSucceeded(event -> {
+                    data.setClusters(clusterizationTask.getValue());
+                    clusterizationLabel.textProperty().unbind();
+                    clusterizationLabel.setText(String.format("Кластеризация завершена. Результат сохранен в файл %s", clusterizationTask.getMessage()));
+                });
 
                 progressBar.progressProperty().unbind();
                 progressBar.progressProperty().bind(task.progressProperty());
@@ -516,9 +559,11 @@ public class CourseWorkMain {
 
                 task.setOnSucceeded(event -> {
                     label.textProperty().unbind();
-                    label.setText(String.format("Обучение завершено. Данные сохранены %s", task.getMessage()));
-                    data.setLearningData(task.getValue());
+                    label.setText(String.format("Обучение завершено. Данные сохранены в директории %s", task.getMessage()));
+                    clusterizationLabel.setVisible(true);
+                    data.setLearningData(task.getValue(), true);
                     progressBar.setVisible(false);
+                    new Thread(clusterizationTask).start();
                 });
 
                 new Thread(task).start();

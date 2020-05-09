@@ -2,12 +2,11 @@ package pojo;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TDAResponse {
+public class TDAResponse implements Response {
     private List<TDAOneFileResponse> tdaResponse;
 
     public TDAResponse() {
